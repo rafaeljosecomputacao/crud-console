@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+using System.Data.SqlClient;
 using Students.Models;
 
 namespace Students
@@ -7,18 +9,28 @@ namespace Students
     {
         static void Main(string[] args)
         {
-            Student student = new Student();
+            // Creating database connection
+            ConnectionString connectionString = new ConnectionString();
+            string sqlString = connectionString.GetConnectionString();
 
-            Console.Write("Enter your name: ");
-            string name = Console.ReadLine();
-            Console.Write("Enter your email: ");
-            string email = Console.ReadLine();
+            SqlConnection sqlConnection;
+            sqlConnection = new SqlConnection(sqlString);
 
-            student.Name = name;
-            student.Email = email;
-
-            Console.WriteLine("Name: " + student.Name);
-            Console.WriteLine("Email: " + student.Email);
+            // Attempt to connect to the database
+            try
+            {
+                sqlConnection.Open();
+                Console.WriteLine("Connected to the database");
+                Console.WriteLine();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
     }
 }
