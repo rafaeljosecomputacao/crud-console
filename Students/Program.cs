@@ -31,6 +31,33 @@ namespace Students
             {
                 sqlConnection.Close();
             }
+
+            // Creating table
+            string createTableSql = "IF OBJECT_ID('students') IS NULL " +
+                "CREATE TABLE students (" +
+                "id INT IDENTITY(1,1) PRIMARY KEY," +
+                "name VARCHAR(100) NOT NULL," +
+                "email VARCHAR(100) NOT NULL)";
+
+            SqlCommand sqlCommand;
+            sqlCommand = new SqlCommand(createTableSql, sqlConnection);
+
+            // Attempt to connect to the database
+            try
+            {
+                sqlConnection.Open();
+                sqlCommand.ExecuteNonQuery();
+                Console.WriteLine("Successfully created table");
+                Console.WriteLine();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
     }
 }
