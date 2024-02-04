@@ -59,6 +59,33 @@ namespace Students
                 sqlConnection.Close();
             }
 
+            // User data entry
+            Console.Write("Name: ");
+            string name = Console.ReadLine();
+            Console.Write("Email: ");
+            string email = Console.ReadLine();
+            Console.WriteLine();
+
+            // Create
+            string createSql = "INSERT INTO students(name,email) VALUES ('" + name + "','" + email + "')";
+            sqlCommand = new SqlCommand(createSql, sqlConnection);
+
+            // Attempt to connect to the database
+            try
+            {
+                sqlConnection.Open();
+                sqlCommand.ExecuteNonQuery();
+                Console.WriteLine("Successfully created student");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+
             // Read
             string readSql = "SELECT * FROM students";
             sqlCommand = new SqlCommand(readSql, sqlConnection);
