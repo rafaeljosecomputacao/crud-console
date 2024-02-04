@@ -138,6 +138,31 @@ namespace Students
             {
                 sqlConnection.Close();
             }
+            
+            // User data entry
+            Console.Write("Id: ");
+            int idDelete = int.Parse(Console.ReadLine());
+            Console.WriteLine();
+
+            // Delete
+            string deleteSql = "DELETE students WHERE id = '" + idDelete + "'";
+            sqlCommand = new SqlCommand(deleteSql, sqlConnection);
+
+            // Attempt to connect to the database
+            try
+            {
+                sqlConnection.Open();
+                sqlCommand.ExecuteNonQuery();
+                Console.WriteLine("Successfully deleted student");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
     }
 }
