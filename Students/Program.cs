@@ -58,6 +58,32 @@ namespace Students
             {
                 sqlConnection.Close();
             }
+
+            // Read
+            string readSql = "SELECT * FROM students";
+            sqlCommand = new SqlCommand(readSql, sqlConnection);
+
+            SqlDataReader sqlReader;
+
+            // Attempt to connect to the database
+            try
+            {
+                sqlConnection.Open();
+                sqlReader = sqlCommand.ExecuteReader();
+
+                while (sqlReader.Read())
+                {
+                    Console.WriteLine($"Id: {sqlReader["id"]}, Name: {sqlReader["name"]}, Email: {sqlReader["email"]}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
     }
 }
