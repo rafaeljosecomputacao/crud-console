@@ -74,6 +74,8 @@ namespace Students
             // Main display
             bool finished = false;
 
+            SqlDataReader sqlReader;
+
             do
             {
                 Title();
@@ -84,177 +86,273 @@ namespace Students
                 Console.WriteLine();
 
                 Console.Write("Choose an operation: ", Color.WhiteSmoke);
-                char operation = char.Parse(Console.ReadLine());
-                
+                var menuOption = Console.ReadKey();
+
                 Console.Clear();
 
                 bool defaultOperation = true;
 
-                switch (operation)
+                if (menuOption.Key != ConsoleKey.Enter)
                 {
-                    case '1':
-                        Title();
-                        Subtitle("Create", Color.ForestGreen);
+                    char operation = menuOption.KeyChar;
 
-                        Console.Write("Name: ", Color.WhiteSmoke);
-                        string inputName = Console.ReadLine();
-                        Console.Write("Email: ", Color.WhiteSmoke);
-                        string inputEmail = Console.ReadLine();
-                        Console.WriteLine();
+                    switch (operation)
+                    {
+                        case '1':
+                            Title();
+                            Subtitle("Create", Color.ForestGreen);
 
-                        // Create
-                        string createSql = "INSERT INTO students(name,email) VALUES ('" + inputName + "','" + inputEmail + "')";
-                        sqlCommand = new SqlCommand(createSql, sqlConnection);
+                            Console.Write("Name: ", Color.WhiteSmoke);
+                            string inputName = Console.ReadLine();
+                            Console.Write("Email: ", Color.WhiteSmoke);
+                            string inputEmail = Console.ReadLine();
+                            Console.WriteLine();
 
-                        // Attempt to connect to the database
-                        try
-                        {
-                            sqlConnection.Open();
-                            sqlCommand.ExecuteNonQuery();
-                            Console.WriteLine("Successfully created student", Color.WhiteSmoke);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error: {ex.Message}", Color.WhiteSmoke);
-                        }
-                        finally
-                        {
-                            sqlConnection.Close();
-                        }
+                            // Create
+                            string createSql = "INSERT INTO students(name,email) VALUES ('" + inputName + "','" + inputEmail + "')";
+                            sqlCommand = new SqlCommand(createSql, sqlConnection);
 
-                        Console.WriteLine();
-                        defaultOperation = false;
-                        FinalizeDisplay();
-                        break;
-                    case '2':
-                        Title();
-                        Subtitle("Read", Color.DodgerBlue);
-                        
-                        // Read
-                        string readSql = "SELECT * FROM students";
-                        sqlCommand = new SqlCommand(readSql, sqlConnection);
-
-                        SqlDataReader sqlReader;
-
-                        // List of students
-                        List<Student> students = new List<Student>();
-
-                        // Attempt to connect to the database
-                        try
-                        {
-                            sqlConnection.Open();
-                            sqlReader = sqlCommand.ExecuteReader();
-
-                            while (sqlReader.Read())
+                            // Attempt to connect to the database
+                            try
                             {
-                                // Forcing an object type conversion to integer and string
-                                int id = (int) sqlReader["id"];
-                                string name = (string) sqlReader["name"];
-                                string email = (string) sqlReader["email"];
-
-                                // Adding student to students list
-                                students.Add(new Student(id, name, email));
-
-                                // Showing the object directly
-                                //Console.WriteLine($"Id: {sqlReader["id"]}, Name: {sqlReader["name"]}, Email: {sqlReader["email"]}", Color.WhiteSmoke);
+                                sqlConnection.Open();
+                                sqlCommand.ExecuteNonQuery();
+                                Console.WriteLine("Successfully created student", Color.WhiteSmoke);
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error: {ex.Message}", Color.WhiteSmoke);
-                        }
-                        finally
-                        {
-                            sqlConnection.Close();
-                        }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error: {ex.Message}", Color.WhiteSmoke);
+                            }
+                            finally
+                            {
+                                sqlConnection.Close();
+                            }
 
-                        // Showing the object using a list
-                        foreach (Student student in students)
-                        {
-                            Console.Write("Id: ", Color.DodgerBlue);
-                            Console.Write(student.Id + ", ", Color.WhiteSmoke);
-                            Console.Write("Name: ", Color.DodgerBlue);
-                            Console.Write(student.Name + ", ", Color.WhiteSmoke);
-                            Console.Write("Email: ", Color.DodgerBlue);
-                            Console.WriteLine(student.Email, Color.WhiteSmoke);
-                        }
+                            Console.WriteLine();
+                            defaultOperation = false;
+                            FinalizeDisplay();
+                            break;
+                        case '2':
+                            Title();
+                            Subtitle("Read", Color.DodgerBlue);
 
-                        Console.WriteLine();
-                        defaultOperation = false;
-                        FinalizeDisplay();
-                        break;
-                    case '3':
-                        Title();
-                        Subtitle("Update", Color.Yellow);
+                            // Read
+                            string readSql = "SELECT * FROM students";
+                            sqlCommand = new SqlCommand(readSql, sqlConnection);
 
-                        Console.Write("Id: ", Color.WhiteSmoke);
-                        int idUpdate = int.Parse(Console.ReadLine());
-                        Console.Write("New email: ", Color.WhiteSmoke);
-                        string newEmail = Console.ReadLine();
-                        Console.WriteLine();
+                            // List of students
+                            List<Student> students = new List<Student>();
 
-                        // Update
-                        string updateSql = "UPDATE students SET email = '" + newEmail + "' WHERE id = '" + idUpdate + "'";
-                        sqlCommand = new SqlCommand(updateSql, sqlConnection);
+                            // Attempt to connect to the database
+                            try
+                            {
+                                sqlConnection.Open();
+                                sqlReader = sqlCommand.ExecuteReader();
 
-                        // Attempt to connect to the database
-                        try
-                        {
-                            sqlConnection.Open();
-                            sqlCommand.ExecuteNonQuery();
-                            Console.WriteLine("Successfully updated student", Color.WhiteSmoke);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error: {ex.Message}", Color.WhiteSmoke);
-                        }
-                        finally
-                        {
-                            sqlConnection.Close();
-                        }
+                                while (sqlReader.Read())
+                                {
+                                    // Forcing an object type conversion to integer and string
+                                    int id = (int)sqlReader["id"];
+                                    string name = (string)sqlReader["name"];
+                                    string email = (string)sqlReader["email"];
+                                       
+                                    // Adding student to students list
+                                    students.Add(new Student(id, name, email));
+                                   
+                                    // Showing the object directly
+                                    //Console.WriteLine($"Id: {sqlReader["id"]}, Name: {sqlReader["name"]}, Email: {sqlReader["email"]}", Color.WhiteSmoke);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error: {ex.Message}", Color.WhiteSmoke);
+                            }
+                            finally
+                            {
+                                sqlConnection.Close();
+                            }
 
-                        Console.WriteLine();
-                        defaultOperation = false;
-                        FinalizeDisplay();
-                        break;
-                    case '4':
-                        Title();
-                        Subtitle("Delete", Color.OrangeRed);
+                            // Showing the object using a list
+                            if (students.Count > 0)
+                            {                     
+                                foreach (Student student in students)
+                                {
+                                    Console.Write("Id: ", Color.DodgerBlue);
+                                    Console.Write(student.Id + ", ", Color.WhiteSmoke);
+                                    Console.Write("Name: ", Color.DodgerBlue);
+                                    Console.Write(student.Name + ", ", Color.WhiteSmoke);
+                                    Console.Write("Email: ", Color.DodgerBlue);
+                                    Console.WriteLine(student.Email, Color.WhiteSmoke);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Empty list", Color.WhiteSmoke);
+                            }
 
-                        Console.Write("Id: ", Color.WhiteSmoke);
-                        int idDelete = int.Parse(Console.ReadLine());
-                        Console.WriteLine();
+                            Console.WriteLine();
+                            defaultOperation = false;
+                            FinalizeDisplay();
+                            break;
+                        case '3':
+                            Title();
+                            Subtitle("Update", Color.Yellow);
 
-                        // Delete
-                        string deleteSql = "DELETE students WHERE id = '" + idDelete + "'";
-                        sqlCommand = new SqlCommand(deleteSql, sqlConnection);
+                            Console.Write("Id: ", Color.WhiteSmoke);
+                            int idUpdate = int.Parse(Console.ReadLine());
 
-                        // Attempt to connect to the database
-                        try
-                        {
-                            sqlConnection.Open();
-                            sqlCommand.ExecuteNonQuery();
-                            Console.WriteLine("Successfully deleted student", Color.WhiteSmoke);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error: {ex.Message}", Color.WhiteSmoke);
-                        }
-                        finally
-                        {
-                            sqlConnection.Close();
-                        }
+                            bool update = false;
 
-                        Console.WriteLine();
-                        defaultOperation = false;
-                        FinalizeDisplay();
-                        break;
-                    default:
-                        Console.WriteLine("Invalid operation", Color.WhiteSmoke);
-                        Console.WriteLine();
-                        defaultOperation = true;
-                        FinalizeDisplay();
-                        break;
+                            // Read to check if the id exists
+                            readSql = "SELECT * FROM students";
+                            sqlCommand = new SqlCommand(readSql, sqlConnection);
+
+                            // Attempt to connect to the database
+                            try
+                            {
+                                sqlConnection.Open();
+                                sqlReader = sqlCommand.ExecuteReader();
+
+                                while (sqlReader.Read())
+                                {
+                                    // Forcing an object type conversion to integer and string
+                                    int id = (int)sqlReader["id"];
+
+                                    if (id == idUpdate)
+                                    {
+                                        update = true;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error: {ex.Message}", Color.WhiteSmoke);
+                            }
+                            finally
+                            {
+                                sqlConnection.Close();
+                            }
+
+                            if (update == true)
+                            {
+                                Console.Write("New email: ", Color.WhiteSmoke);
+                                string newEmail = Console.ReadLine();
+                                Console.WriteLine();
+
+                                // Update
+                                string updateSql = "UPDATE students SET email = '" + newEmail + "' WHERE id = '" + idUpdate + "'";
+                                sqlCommand = new SqlCommand(updateSql, sqlConnection);
+
+                                // Attempt to connect to the database
+                                try
+                                {
+                                    sqlConnection.Open();
+                                    sqlCommand.ExecuteNonQuery();
+                                    Console.WriteLine("Successfully updated student", Color.WhiteSmoke);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"Error: {ex.Message}", Color.WhiteSmoke);
+                                }
+                                finally
+                                {
+                                    sqlConnection.Close();
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine("Invalid Id, this student doesn't exist", Color.WhiteSmoke);
+                            }
+                           
+                            Console.WriteLine();
+                            defaultOperation = false;
+                            FinalizeDisplay();
+                            break;
+                        case '4':
+                            Title();
+                            Subtitle("Delete", Color.OrangeRed);
+
+                            Console.Write("Id: ", Color.WhiteSmoke);
+                            int idDelete = int.Parse(Console.ReadLine());
+                            Console.WriteLine();
+
+                            bool delete = false;
+
+                            // Read to check if the id exists
+                            readSql = "SELECT * FROM students";
+                            sqlCommand = new SqlCommand(readSql, sqlConnection);
+
+                            // Attempt to connect to the database
+                            try
+                            {
+                                sqlConnection.Open();
+                                sqlReader = sqlCommand.ExecuteReader();
+
+                                while (sqlReader.Read())
+                                {
+                                    // Forcing an object type conversion to integer and string
+                                    int id = (int)sqlReader["id"];
+
+                                    if (id == idDelete)
+                                    {
+                                        delete = true;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error: {ex.Message}", Color.WhiteSmoke);
+                            }
+                            finally
+                            {
+                                sqlConnection.Close();
+                            }
+
+                            if (delete == true)
+                            {
+                                // Delete
+                                string deleteSql = "DELETE students WHERE id = '" + idDelete + "'";
+                                sqlCommand = new SqlCommand(deleteSql, sqlConnection);
+
+                                // Attempt to connect to the database
+                                try
+                                {
+                                    sqlConnection.Open();
+                                    sqlCommand.ExecuteNonQuery();
+                                    Console.WriteLine("Successfully deleted student", Color.WhiteSmoke);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"Error: {ex.Message}", Color.WhiteSmoke);
+                                }
+                                finally
+                                {
+                                    sqlConnection.Close();
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid Id, this student doesn't exist", Color.WhiteSmoke);
+                            }
+
+                            Console.WriteLine();
+                            defaultOperation = false;
+                            FinalizeDisplay();
+                            break;
+                        default:
+                            Console.WriteLine("Invalid operation", Color.WhiteSmoke);
+                            Console.WriteLine();
+                            defaultOperation = true;
+                            FinalizeDisplay();
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid operation", Color.WhiteSmoke);
+                    Console.WriteLine();
+                    FinalizeDisplay();
                 }
 
                 if (defaultOperation == false)
@@ -264,21 +362,20 @@ namespace Students
                     Console.WriteLine("Press y", Color.WhiteSmoke);
                     Console.Write("No: ", Color.Red);
                     Console.WriteLine("Press any key", Color.WhiteSmoke);
-                    char anotherOperation = char.Parse(Console.ReadLine().ToLower());
 
-                    Console.Clear();
-
-                    if (anotherOperation == 'y')
+                    if (Console.ReadKey().Key == ConsoleKey.Y)
                     {
-                        finished = false;
+                        Console.Clear();
+                        finished = false;                  
                     }
                     else
                     {
+                        Console.Clear();
                         Console.Write("Thank you for using the ", Color.WhiteSmoke);
                         Console.WriteLine("Orange System", Color.Orange);
                         Console.ReadKey();
                         finished = true;
-                    } 
+                    }
                 }
             } while (finished == false);
         }
