@@ -1,6 +1,6 @@
-## Documentation of this repository
+## Repository documentation
 
-This project is a desktop application of a simple crud. It was developed with C# and SQL. Project created during my Web Development studies.
+This project is a desktop application of a simple crud and was developed with C# and SQL. Project created during my Web Development studies.
 
 > Orange System
 
@@ -16,7 +16,7 @@ Some basic validations were done in the code.
 
 > Database
 
-Create the database in Microsoft SQL Server Management Studio. The database consists of a table called students with the columns id, name and email. The table is created via C# code in Microsoft Visual Studio. To connect to the database, it is necessary to create the file "ConnectionString.cs" inside the "Models" directory, passing your connection settings.
+The database consists of a table called students with the columns id, name and email. The table was created using C# code in Microsoft Visual Studio. To connect to the database, you need to create the "ConnectionString.cs" file inside the "Models" directory, passing your connection settings.
 
 
 <img src="/Students/Images/readme-image-3.png">
